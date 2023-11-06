@@ -1,0 +1,73 @@
+/* featuredCatagories.css */
+.featured-categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.category {
+    text-align: center;
+    margin: 10px;
+    flex-basis: calc(33.33% - 20px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.category:hover {
+    transform: scale(1.05);
+}
+
+.category-image img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    padding: 10px;
+}
+
+.category-button {
+    background-color: #000000;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.category-button:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+/* For small screens (e.g., mobile) */
+@media (max-width: 768px) {
+    .featured-categories {
+        flex-direction: column;
+    }
+
+    .category {
+        flex-basis: calc(50% - 20px);
+    }
+}
+
+/* For medium screens (e.g., tablets) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .category {
+        flex-basis: calc(50% - 20px);
+    }
+}

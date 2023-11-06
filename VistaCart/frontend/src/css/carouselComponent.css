@@ -1,0 +1,15 @@
+.carousel-container {
+    margin: 20px;
+    width: 90%;
+    margin: 0 auto;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-container .legend {
+    text-align: center;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+}
