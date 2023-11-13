@@ -5,57 +5,51 @@
 div.scroll-container {
     display: flex;
     background-color: #f0f0f0;
-    /* Lighter background color */
-    flex-wrap: nowrap;
-    white-space: nowrap;
-    overflow-x: auto;
     padding: 20px;
-    /* Increased padding for better spacing */
     margin: 20px 0;
-    align-items: stretch;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .product_image_slider {
+    width: 300px;
+    /* Adjust the width to your preference */
     border: 1px solid #ddd;
-    /* Softer border */
     margin: 0 10px;
     padding: 15px;
-    /* Increased padding for better spacing */
     background-color: #fff;
-    flex: 1 0 18%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Add a subtle box shadow for depth */
     transition: transform 0.2s;
-    /* Add a hover effect */
 }
 
-div.scroll-container div img {
+.product_image_slider img {
+    /* max-width: 100%;
+    height: auto; */
     width: 100%;
+    height: 80%;
+    object-fit: fill;
+    
 }
 
 .product_image_slider:hover {
     transform: scale(1.05);
-    /* Zoom in on hover */
 }
 
 .sellerName {
     font-size: larger;
     font-weight: 700;
     margin: 5px 0;
-    /* Increased margin for better spacing */
 }
 
 .title {
     font-size: large;
     margin: 5px 0;
-    /* Increased margin for better spacing */
 }
 
 .price {
     font-size: x-large;
     color: #d20000;
     margin: 5px 0;
-    /* Increased margin for better spacing */
 }
 .home{
     padding: 15px;

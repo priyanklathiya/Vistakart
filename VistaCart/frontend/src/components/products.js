@@ -13,14 +13,15 @@ function Products() {
   }, [])  
   
   const fetchData = () => {
-      axios.get("http://localhost:8080/api/products/getAllProducts")
-        .then((response) => {
-          // console.log(response.data)
-          if (response.data) {
-            setCatList(response.data.allProducts);
-          }
-        })
+    axios.get("http://localhost:8080/api/products/getAllProducts")
+      .then((response) => {
+        // console.log(response.data)
+        if (response.data) {
+          setCatList(response.data.allProducts);
+        }
+      })
   }
+
 
   const handleView = (cat) => {
     

@@ -23,6 +23,12 @@ import AddUpdateSize from './components/AddUpdateSize.js';
 import ProductDetails from './components/ProductDetails.js'; 
 import Quantity from './components/Quantity.js';
 import AddUpdateQuantity from './components/AddUpdateQuantity.js'; 
+import FeaturedProducts from './components/FeaturedProducts.js'; 
+import FeaturedCategory from './components/FeaturedCategory.js'; 
+import AddFeaturedProduct from './components/AddFeaturedProduct.js'; 
+import AddUpdateFeaturedCategory from './components/AddUpdateFeaturedCategory.js'; 
+import UpdateQuantity from './components/UpdateQuantity.js'; 
+
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 
@@ -120,6 +126,19 @@ function App() {
             <Route path="/Quantity" element={<Quantity />} />
 
             <Route path="/AddUpdateQuantity" element={<AddUpdateQuantity />} />
+
+            <Route path="/FeaturedProducts" element={<FeaturedProducts />} />
+
+            <Route path="/FeaturedCategory" element={<FeaturedCategory />} />
+
+            <Route path="/AddFeaturedProduct" element={<AddFeaturedProduct />} />
+
+            <Route path="/AddUpdateFeaturedCategory" element={<AddUpdateFeaturedCategory />} />
+            
+            <Route path="/UpdateQuantity" element={<UpdateQuantity />} />
+
+
+            
 
           </Route>
         

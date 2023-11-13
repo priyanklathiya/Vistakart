@@ -110,8 +110,9 @@ function AddUpdateProduct() {
                 gender: !gender,
                 selectedCategory: !selectedCategory,
                 selectedBrand: !selectedBrand,
-                imagePath1: !imagePath1
+                imagePath1: !imagePath1 && !productDetails.imagePath.imagePath1 && !newImagePath1,
             };
+            
             
         } else {
             formErrors = {
@@ -123,7 +124,7 @@ function AddUpdateProduct() {
                 gender: !gender,
                 selectedCategory: !selectedCategory,
                 selectedBrand: !selectedBrand,
-                imagePath1: !imagePath1 && !productDetails.imagePath.imagePath1 && !newImagePath1,
+                imagePath1: !imagePath1
             };
             
         }

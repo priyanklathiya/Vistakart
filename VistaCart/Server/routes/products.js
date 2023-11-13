@@ -17,9 +17,11 @@ const upload = multer({
 })
 
 
-const { getAllProducts, addProduct, deleteProduct, updateProduct } = require("../controllers/products");
+const { getAllProducts, addProduct, deleteProduct, updateProduct, getProductBySku, getProductById } = require("../controllers/products");
 
 router.route("/getAllProducts").get(getAllProducts);
+router.route("/getProductBySku").post(getProductBySku);
+router.route("/getProductById/:productId").get(getProductById);
 
 // router.route("/addProduct").post(upload.fields([ { name: 'imagePath1', maxCount: 1 }, { name: 'imagePath2', maxCount: 1 }, { name: 'imagePath3', maxCount: 1 }, ]), addProduct);
 

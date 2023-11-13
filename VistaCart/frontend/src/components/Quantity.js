@@ -1,132 +1,116 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 
 function Quantity() {
-const [catList, setCatList] = useState([]);
-const [categories, setCategories] = useState([]); 
+  const [catList, setCatList] = useState([]);
+  const [formErrors, setFormErrors] = useState(null);
+  const [sku, setSku] = useState('');
 
-  // fetch data for table
-  useEffect(() => {
-    fetchData();
-    fetchAllCategories();
-  }, [])  
-  
-  const fetchData = () => {
-      axios.get("http://localhost:8080/api/quantity/getAllQuantity")
-        .then((response) => {
-          // console.log(response)
-          if (response.data) {
-            setCatList(response.data.allQuantity);
-          }
-        })
-  }
+  const SearchProduct = (e) => {
+    e.preventDefault();
+    const formErrors = {
+      sku: !sku,
+    };
 
-    const fetchAllCategories = () => {
-      axios.get("http://localhost:8080/api/category/getAllCategory")
-        .then((response) => {
-          // console.log(response)
-          if (response.data) {
-            setCategories(response.data.allCategory);
-          }
-        })
-  }
+    setFormErrors({ ...formErrors });
+    if (Object.values(formErrors).some((v) => v)) return;
 
+    const formData = new FormData();
+    formData.append('sku', sku);
 
-
-const getCategoryById = (id) => {
-  const category = categories.find((cat) => cat._id === id);
-
-  if (category) {
-    const categoryName = category.categoryName;
-    return <div>{categoryName}</div>;
-  } else {
-    return <div>Category not found</div>;
-  }
-}
-  
-
-  const rows =
-    catList.length > 0 ? (
-      catList.map((cat) => (
-        <tr key={cat._id}>
-          <td>{getCategoryById(cat.categoryId)}</td>
-          <td>{cat.size}</td>
-          <td>
-            <Link to="/AddUpdateSize" className='link-none-css' state={{ type: 'update', sizedata: cat }}>
-              <button className='btn btn-primary'>
-                Update
-              </button> &nbsp;
-            </Link>
-            <button
-                className='btn btn-danger ml-2'
-                onClick={() => handleDeleteSize(cat._id)}
-              >
-              Delete
-            </button>
-          </td>
-        </tr>
-      ))
-    ) : (
-      <tr>
-        <td colSpan={3} className="text-center">
-          <b>No record found</b>
-        </td>
-      </tr>
-    );
-    
-  const handleDeleteSize = (id) => {
-    console.log(id);
-    // return false;
-    let sizeData = {
-      sizeId: id,
-    }
-
-    axios.defaults.withCredentials = true;
-
-    axios.post("http://localhost:8080/api/size/deleteSize", sizeData)
+    axios.post('http://localhost:8080/api/quantity/getQuantityBySku', formData, {
+      headers: { 'Content-Type': 'application/json' },
+    })
       .then((response) => {
-        console.log(response);
         if (response.status === 200) {
-          if (response.data.status === 1) { 
-            alert('Data Deleted Successfully');
-            fetchData();
-          }
+          console.log(response.data.quantity);
+          setCatList(response.data.quantity); // Update catList with search results
         } else {
-          alert('Error in deleting data');
+          alert('NO DATA FOUND!');
         }
-      }).catch((err) => { 
-        console.error(`An error occurred: ${err}`);
       })
-    }
-  
+      .catch((err) => {
+        alert('NO DATA FOUND!');
+      });
+  };
 
   return (
     <>
-      <h1 className='text-center m-5'>Quantity</h1>
+      <h1 className="text-center m-5">Quantity</h1>
+      
+      <div className='container mt-5 mb-5 d-flex justify-content-center'>
 
-      <div className='container mt-5 mb-5'>
-
-        <Link to="/AddUpdateQuantity" state={{ type: 'new' }} className='admin-grid-section'>
-            <button className='btn btn-success'>
+        <Link to="/AddUpdateQuantity" state={{ type: 'new' }} >
+            <button className='btn btn-primary p-2 m-2'>
               Add Quantity for product
             </button>
         </Link>
+        
+        <Link to="/UpdateQuantity" >
+            <button className='btn btn-secondary p-2 m-2'>
+              Update Quantity for product
+            </button>
+        </Link>
+      </div>
+      
+      <hr />
+
+      <div className="container mt-5 mb-5">
+        <h3 className="text-center">Search for a product</h3>
+        <form onSubmit={SearchProduct} method="post">
+          <div className="form-group col-sm-6 margin-center">
+            <label htmlFor="productId">Product SKU: </label>
+            <br />
+            <input
+              type="text"
+              className={`form-control ${formErrors && (formErrors?.sku ? 'is-invalid' : 'is-valid')}`}
+              id="sku"
+              name="sku"
+              value={sku}
+              onChange={(e) => {
+                setSku(e.currentTarget.value);
+              }}
+              placeholder="Enter SKU"
+            />
+            <div className="invalid-feedback">Please enter a valid SKU.</div>
+          </div>
+
+          <div className="col-sm-6 margin-center">
+            <button type="submit" className="btn btn-warning mt-2 mb-4">
+              Search
+            </button>
+          </div>
+        </form>
       </div>
       <div className="container">
-            <table className="table table-striped table-dark mt-5">
-                <thead>
-                    <tr>
-                        <th scope="col">Size</th>
-                        <th scope="col">Product</th>
-                        <th scope="col">Update / Delete</th>
-                    </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-            </table>
-        </div>
+        <table className="table table-striped table-dark mt-5">
+          <thead>
+            <tr>
+              <th scope="col">SKU</th>
+              <th scope="col">Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {catList && catList.length > 0 ? (
+              catList.map((cat) => (
+                <tr key={cat._id}>
+                  <td>{cat.sku}</td>
+                  <td>{cat.quantity}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={2} className="text-center">
+                  <b>No record found</b>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </>
-  )
+  );
 }
 
-export default Quantity
+export default Quantity;

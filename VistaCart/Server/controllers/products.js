@@ -5,6 +5,55 @@ const getAllProducts = async (req, res) => {
     res.status(200).json({ allProducts });
 };
 
+const getProductBySku = async (req, res) => {
+    const sku  = req.body.sku; 
+    try {
+        const product = await productmodel.findOne({ sku });
+            // console.log(product);
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.status(200).json({ product });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+// const getProductById = async (req, res) => {
+//     const id  = req.body.productId;
+//     try {
+//         const product = await productmodel.findOne({ productId });
+//             // console.log(product);
+
+//         if (!product) {
+//             return res.status(404).json({ error: 'Product not found' });
+//         }
+//         res.status(200).json({ product });
+//     } catch (err) {
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
+
+const getProductById = async (req, res) => {
+    // const id = req.body.productId; // Extract productId from the request body
+    const productId = req.params.productId;
+    // console.log(req.params.productId);
+    try {
+        const product = await productmodel.findOne({ _id: productId }); // Use the id variable in your query
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.status(200).json({ product });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
 const addProduct = async (req, res) => { 
     try {
         // console.log(req.body);
@@ -155,4 +204,4 @@ const updateProduct = async (req, res) => {
 };
 
 
-module.exports = {getAllProducts, addProduct, deleteProduct, updateProduct}
+module.exports = {getAllProducts, addProduct, deleteProduct, updateProduct, getProductBySku, getProductById }

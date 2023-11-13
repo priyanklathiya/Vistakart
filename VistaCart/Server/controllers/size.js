@@ -36,6 +36,20 @@ const getAllSize = async (req, res) => {
     res.status(200).json({ allSize });
 };
 
+const getSizeByCategory = async (req, res) => { 
+    const categoryId  = req.body.categoryId; 
+    try {
+        const size = await sizemodel.find({ categoryId });
+        
+        if (!size) {
+            return res.status(404).json({ error: 'Sizes not found' });
+        }
+        res.status(200).json({ size });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 const deleteSize = async (req, res) => {
     // console.log(req.body)
     try {
@@ -72,5 +86,5 @@ const updateSize = async (req, res) => {
         res.status(500).json({ msg: "Error: Data could not be updated.", err: error, status: 0 });
     }    
 };
-module.exports = { addSize, getAllSize, deleteSize, updateSize };
+module.exports = { addSize, getAllSize, deleteSize, updateSize, getSizeByCategory };
 // module.exports = { getAllSubCategory, addSubCategory, deleteSubCategory, updateSubCategory}

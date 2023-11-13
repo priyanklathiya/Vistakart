@@ -156,6 +156,16 @@ const Header = () => {
                       Quantity
                   </Link>
                 </li>
+                <li>
+                  <Link to="/FeaturedProducts">
+                      Featured Products
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/FeaturedCategory">
+                      Featured Categories
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>   

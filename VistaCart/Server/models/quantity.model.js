@@ -16,6 +16,7 @@ const quantity = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'product'
     },
+    sku: { type: String, required: true, trim: true },
 });
 
 const info = mongoose.model("quantity", quantity);  // collection name - quantity

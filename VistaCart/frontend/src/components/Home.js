@@ -15,19 +15,24 @@ function Home() {
 
   // check user session from server using axios
   const [userSession, setUserSession] = useState(false);
-
-  // useEffect(() => {
-  //   axios.get("http://localhost:8080/auth/userSession")
-  //     .then((response) => {
-  //       // setUserSession(!!(response && response.data));
-  //       console.log(response)
-  //      })
-  // }, [])
+  const [productsList, setProductsList] = useState([]);
 
 
-
-
+  // fetch data for table
+  useEffect(() => {
+    fetchProductsData();
+  }, [])  
   
+  const fetchProductsData = () => {
+    axios.get("http://localhost:8080/api/products/getAllProducts")
+      .then((response) => {
+        // console.log(response.data)
+        if (response.data) {
+          console.log(response.data);
+          setProductsList(response.data.allProducts);
+        }
+      })
+  }
 
 
   return (
@@ -59,67 +64,20 @@ function Home() {
         <br/>
       <div className="scroll-container">
         
-        <div className='product_image_slider'>
+        {/* <div className='product_image_slider'>
           <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
           <p className='sellerName'>New Balance</p>
           <p className='title'> Mens 237 V1 Sneaker </p>
           <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker  </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        <div className='product_image_slider'>
-          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
-          <p className='sellerName'>New Balance</p>
-          <p className='title'> Mens 237 V1 Sneaker Mens 237 V1 Sneaker </p>
-          <p className='price'>$ 99.99 </p>
-        </div>
-        
+        </div> */}
+        {productsList.map((product, index) => (
+          <div className='product_image_slider' key={index}>
+            <img src={`http://localhost:8080/Images/products/${product.imagePath.imagePath1}`} alt={product.productName.imagePath1} />
+            <p className='sellerName'>{product.sellerName}</p>
+            <p className='title'>{product.productName}</p>
+            <p className='price'>$ {product.price}</p>
+          </div>
+        ))}
       </div>
 
 
