@@ -3,84 +3,109 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function ProductDetails() {
-  const [quantityList, setQuantityList] = useState([]);
+  const [quantityList, setQuantityList] = useState([0]);
+  const [quantity, setQuantity] = useState(0);
+  const [size, setSize] = useState([]);
+  const [selectedSizeId, setSelectedSizeId] = useState('');
+  const [selectedQuantity, setSelectedQuantity] = useState(0);
+  const [quantityListLoading, setQuantityListLoading] = useState(false);
+  const [quantityFetchError, setQuantityFetchError] = useState('');
+  const [addToCartError, setAddToCartError] = useState('');
+
   const location = useLocation();
   const { productDetails } = location.state;
+  const categoryId = productDetails.categoryId;
+  // console.log(productDetails.sku);
+  let getSizeByCategory = (catId) => {
+    let formData = new FormData();
+    formData.append('categoryId', catId);
 
-  // const [productDetails, setProductDetails] = useState({});
+    axios.post('http://localhost:8080/api/size/getSizeByCategory', formData, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => {
+        window.scrollTo(0, 0);
 
-  // const urlParams = new URLSearchParams(window.location.search);
-  // const productId = urlParams.get('id');
-  // // console.log(urlParams.get('id'));
+        if (response.status === 200) {
+          setSize(response.data.size);
+        } else {
+          console.error('Something went wrong. Sizes could not be fetched!');
+        }
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+  };
 
-  // const fetchProductNames = (productId) => {
-  //   axios.get(`http://localhost:8080/api/products/getProductById/${productId}`)
-  //     .then((response) => {
-  //       if (response.data) {
-  //         const productName = response.data.product;
-  //         console.log(productName);
-  //         setProductDetails(response.data.product);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching product details:", error);
-  //     });
-  // };
 
-  // useEffect(() => {
-  //   console.log(productId);
-  //   if (productId) {
-  //     fetchProductNames(productId);
-  //   }
-  // }, [productId]);
+  let getQuantityBySizeAndProduct = (sizeId, sku) => {
+    setQuantityListLoading(true);
+    setQuantityFetchError('');
 
-  // console.log(productDetails);
+    const formData = new FormData();
+    formData.append('sizeId', sizeId);
+    formData.append('sku', sku);
 
-  //   const fetchProductNames = (products) => {
-  //   products.forEach((product) => {
-  //     axios.get(`http://localhost:8080/api/products/getProductById/${product.productId}`)
-  //       .then((response) => {
-  //         if (response.data) {
-  //           const productName = response.data.product.productName;
-  //           setProductNames((prevProductNames) => ({
-  //             ...prevProductNames,
-  //             [product.productId]: productName,
-  //           }));
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error fetching product details:", error);
-  //       });
-  //   });
-  // };
+    axios.post('http://localhost:8080/api/quantity/getQuantityBySizeAndProduct', formData, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => {
+        setQuantityListLoading(false);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const formData = new FormData();
-  //       formData.append('sku', productDetails.sku);
+        if (response.status === 200) {
+          if (response.data.quantity) {
+          setQuantity(response.data.quantity[0].quantity);
+          const quantityArray = Array.from({ length: response.data.quantity[0].quantity + 1 }, (_, index) => index);
+          setQuantityList(quantityArray);
+          } else {
+            setQuantity(0);
+            setQuantityList([0]);
+          }
 
-  //       const response = await axios.post(
-  //         'http://localhost:8080/api/quantity/getQuantityBySku',
-  //         formData,
-  //         {
-  //           headers: { 'Content-Type': 'application/json' },
-  //         }
-  //       );
+        } else {
+          setQuantityFetchError('Error fetching quantities. Please try again later.');
+        }
+      })
+      .catch((err) => {
+        setQuantityListLoading(false);
+        setQuantityFetchError('Error fetching quantities. Please try again later.');
+      });
+  };
 
-  //       if (response.status === 200) {
-  //         setQuantityList(response.data.quantity);
-  //       } else {
-  //         alert('NO DATA FOUND!');
-  //       }
-  //     } catch (error) {
-  //       alert('Error fetching data!');
-  //     }
-  //   };
+  useEffect(() => {
+    if (categoryId) {
+      getSizeByCategory(categoryId);
+    }
+  }, [categoryId]);
 
-  //   fetchData();
+   const handleSizeChange = (e) => {
+    const newSizeId = e.target.value;
+    setSelectedSizeId(newSizeId);
+    getQuantityBySizeAndProduct(newSizeId, productDetails.sku);
 
-  // }, [productDetails.sku]);
+  };
+
+  const handleQuantityChange = (e) => {
+    setSelectedQuantity(parseInt(e.target.value, 10));
+  };
+
+   const handleAddToCart = () => {
+    if (!selectedSizeId || !selectedQuantity) {
+      setAddToCartError('Please select both size and quantity.');
+      return;
+    }
+
+    // Add logic for adding to cart
+    // ...
+
+    // Clear the error message if successful
+    setAddToCartError('');
+  };
+
+    const handleAddToWishlist = () => {
+    // Add logic for adding to wishlist
+    // ...
+  };
 
   return (
     <>
@@ -116,25 +141,42 @@ function ProductDetails() {
           )}
         </div>
 
-        {/* <div>
-          {quantityList.map((quantity, index) => (
-            <div key={index}>
-              <p>Size: {quantity.sizeId}</p>
-              <label htmlFor={`quantity-${index}`}>Quantity:</label>
-              <select
-                id={`quantity-${index}`}
-                value={quantity.quantity}
-              >
-                {[...Array(Math.min(quantity.quantity, 5)).keys()].map((q) => (
-                  <option key={q + 1} value={q + 1}>
-                    {q + 1}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div> */}
+        <div>
+          <label htmlFor='sizeDropdown'>Select Size:</label>
+          <select id='sizeDropdown' value={selectedSizeId} onChange={handleSizeChange}>
+            <option value="" disabled>Select Size</option>
+            {size && size.map((s) => (
+              <option key={s._id} value={s._id}>
+                {s.size}
+              </option>
+            ))}
+          </select>
+        </div>
 
+        {quantityListLoading && <p>Loading quantities...</p>}
+        {quantityFetchError && <p>{quantityFetchError}</p>}
+
+        {selectedSizeId && (
+          <div>
+            <label htmlFor='quantityDropdown'>Select Quantity:</label>
+            <select id='quantityDropdown' value={selectedQuantity} onChange={handleQuantityChange}>
+              <option value="" disabled>Select Quantity</option>
+              {quantityList && quantityList.map((quantityItem) => (
+                <option key={quantityItem} value={quantityItem}>
+                  {quantityItem}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {addToCartError && <p style={{ color: 'red' }}>{addToCartError}</p>}
+
+        <div>
+          <button onClick={handleAddToCart}>Add to Cart</button>
+          <button onClick={handleAddToWishlist}>Add to Wishlist</button>
+        </div>
+        
       </div>
     </>
   );

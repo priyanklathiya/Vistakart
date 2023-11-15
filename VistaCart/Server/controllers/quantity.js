@@ -104,6 +104,24 @@ const sku  = req.body.sku;
     }
 };
 
+const getQuantityBySizeAndProduct = async (req, res) => { 
+const sizeId  = req.body.sizeId; 
+    const sku = req.body.sku; 
+    // console.log(sizeId);
+    // console.log(sku);
+    try {
+        const quantity = await quantitymodel.find({ sizeId:sizeId, sku:sku });
+            // console.log(quantity);
 
-module.exports = { addQuantity, getAllQuantity, deleteQuantity, updateQuantity, getQuantityBySku };
+        if (!quantity) {
+            return res.status(404).json({ error: 'quantity not found' });
+        }
+        res.status(200).json({ quantity });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+module.exports = { addQuantity, getAllQuantity, deleteQuantity, updateQuantity, getQuantityBySku, getQuantityBySizeAndProduct };
 // module.exports = { getAllSubCategory, addSubCategory, deleteSubCategory, updateSubCategory}
