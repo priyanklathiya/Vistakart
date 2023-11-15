@@ -37,7 +37,7 @@ function Home() {
 
   return (
     <>
-      <div className="carousel-container">
+      <div className="carousel-container" >
       <Carousel
         dynamicHeight={false}
         autoPlay={true}
@@ -64,7 +64,7 @@ function Home() {
         <h1 className='text-center'>OWN THE FLOOR</h1>
         <h3 className='text-center mt-3'>Show the world your style with iconic sneakers and fresh looks.</h3>
         <Link className='m-auto mt-4' to="/Shop">
-          <button type="button" className="btn btn-custom">Shop</button>
+          <button type="button" className="btn btn-dark">Shop</button>
         </Link>
         
 
@@ -80,6 +80,7 @@ function Home() {
           <p className='title'> Mens 237 V1 Sneaker </p>
           <p className='price'>$ 99.99 </p>
         </div> */}
+
         {productsList.map((product, index) => (
           <div className='product_image_slider' key={index}>
             <img src={`http://localhost:8080/Images/products/${product.imagePath.imagePath1}`} alt={product.productName.imagePath1} />
@@ -92,11 +93,12 @@ function Home() {
 
 
       <div className="categories-section">
-        <h2 className="text-center category-title">Categories</h2>
+        <h2 className="text-center category-title">Categories</h2><hr className='text-dark'></hr>
         <FeaturedCategories />
       </div>
 
-      <div className='container'>
+      <div className='background-black'>
+          <h2 className='text-center heading'>Our Service</h2><hr className='text-dark'></hr>
         <div class="grid-container">
           <div class="grid-item">
               <h2> Quick and Easy Store Pickup</h2>
@@ -126,7 +128,7 @@ function Home() {
               Reach out to us if you have any concerns.
               <br/><br/>
                 <Link className='m-auto' to="/ContactUs">
-                  <button type="button" className="btn btn-custom">Contact Us</button>
+                  <button type="button" className="btn btn-dark">Contact Us</button>
                 </Link>
               </p>
           </div>
