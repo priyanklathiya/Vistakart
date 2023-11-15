@@ -10,13 +10,15 @@ function Shop() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
+  const [gender, setGender] = useState(['male', 'female']);
+  const [sortBy, setSortBy] = useState('featured');
 
   useEffect(() => {
     fetchData();
     fetchBrands();
     fetchCategories();
     fetchSubCategories();
-  }, []);
+  }, [selectedBrands, selectedCategories, selectedSubCategories, sortBy]);
 
   const fetchData = () => {
     axios.get('http://localhost:8080/api/products/getAllProducts').then((response) => {
@@ -128,6 +130,22 @@ function Shop() {
     <div></div>
   );
 
+  const genderList = gender.length > 0 ? (
+    gender.map((g) => (
+      <label key={g} className='m-1'>
+        <input
+          type="checkbox"
+          value={g}
+          checked={selectedSubCategories.includes(g)}
+          onChange={() => handleSubCategoryChange(g)}
+        />
+        {g}
+      </label>
+    ))
+  ) : (
+    <div></div>
+  );
+
   const handleViewEvent = (productDetails) => {
     return <Link to={`/products/${productDetails._id}`} state={productDetails}></Link>;
   };
@@ -160,9 +178,71 @@ function Shop() {
     </div>
   );
 
+  const handleSortByChange = (selectedSortBy) => {
+    setSortBy(selectedSortBy);
+  };
+
+  const handleSortButtonClick = () => {
+    // Perform sorting logic based on the selected sorting option
+    // ...
+
+    // For demonstration purposes, let's assume you sort the products array here
+    // You would need to modify this logic based on your actual data structure
+    const sortedProducts = [...catList]; // Assuming catList is an array of products
+
+    switch (sortBy) {
+      case 'lowToHigh':
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case 'highToLow':
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
+      case 'newest':
+        sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        break;
+      // Add more cases as needed
+      default:
+        // 'featured' or any other default sorting logic
+        break;
+    }
+
+    // Update the state with the sorted products
+    setCatList(sortedProducts);
+  };
+
+  
+  const sortOptions = [
+    { value: 'featured', label: 'Featured' },
+    { value: 'lowToHigh', label: 'Price: Low to High' },
+    { value: 'highToLow', label: 'Price: High to Low' },
+    { value: 'newest', label: 'Newest' },
+    // Add more sorting options as needed
+  ];
+
+  const sortByDropdown = (
+    <select value={sortBy} onChange={(e) => handleSortByChange(e.target.value)}>
+      {sortOptions.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+
   return (
     <div className="shop-container">
       <div className="filter-menu">
+        
+        <h5>Sort By:</h5>
+         <hr />
+        {sortByDropdown}
+        <br />
+        <br />
+        <button className="filter-button" > Apply Sort </button>
+
+        <br />
+        <br />
+        <hr />
         <h5>Filter - </h5>
         <hr />
         <h6>By Brands:</h6>
@@ -171,7 +251,9 @@ function Shop() {
         {categoriesList}
         <h6>By Subcategories:</h6>
         {subcategoryList}
-        <button className="filter-button">Go</button>
+        <h6>By Gender:</h6>
+        {genderList}
+        <button className="filter-button" onClick={handleSortButtonClick}> Apply Filter </button>
       </div>
       <div className="product-list">{productsList}</div>
     </div>

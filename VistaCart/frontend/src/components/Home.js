@@ -28,7 +28,7 @@ function Home() {
       .then((response) => {
         // console.log(response.data)
         if (response.data) {
-          // console.log(response.data);
+          console.log(response.data);
           setProductsList(response.data.allProducts);
         }
       })
@@ -37,7 +37,7 @@ function Home() {
 
   return (
     <>
-      <div className="carousel-container">
+      <div className="carousel-container" >
       <Carousel
         dynamicHeight={false}
         autoPlay={true}
@@ -64,7 +64,7 @@ function Home() {
         <h1 className='text-center'>OWN THE FLOOR</h1>
         <h3 className='text-center mt-3'>Show the world your style with iconic sneakers and fresh looks.</h3>
         <Link className='m-auto mt-4' to="/Shop">
-          <button type="button" className="btn btn-custom">Shop</button>
+          <button type="button" className="btn btn-dark">Shop</button>
         </Link>
         
 
@@ -74,6 +74,13 @@ function Home() {
         <br/>
       <div className="scroll-container">
         
+        {/* <div className='product_image_slider'>
+          <img src="http://localhost:8080/Images/shoes_123123.png" alt="Image" />
+          <p className='sellerName'>New Balance</p>
+          <p className='title'> Mens 237 V1 Sneaker </p>
+          <p className='price'>$ 99.99 </p>
+        </div> */}
+
         {productsList.map((product, index) => (
           <div className='product_image_slider' key={index}>
             <img src={`http://localhost:8080/Images/products/${product.imagePath.imagePath1}`} alt={product.productName.imagePath1} />
@@ -86,41 +93,42 @@ function Home() {
 
 
       <div className="categories-section">
-        <h2 className="text-center category-title">Categories</h2>
+        <h2 className="text-center category-title">Categories</h2><hr className='text-dark'></hr>
         <FeaturedCategories />
       </div>
 
-      <div className='container'>
-        <div className="grid-container">
-          <div className="grid-item">
+      <div className='background-black'>
+          <h2 className='text-center heading'>Our Service</h2><hr className='text-dark'></hr>
+        <div class="grid-container">
+          <div class="grid-item">
               <h2> Quick and Easy Store Pickup</h2>
               <p>Convenient and fast pickup options for your orders.</p>
           </div>
-          <div className="grid-item">
+          <div class="grid-item">
               <h2>Free Shipping over $35</h2>
               <p>Enjoy free shipping on orders over $35.</p>
           </div>
-          <div className="grid-item">
+          <div class="grid-item">
               <h2>Low Price Guarantee</h2>
               <p>We guarantee the lowest prices on our products.</p>
           </div>
-          <div className="grid-item">
+          <div class="grid-item">
               <h2>New Deals Every day</h2>
               <p>Discover exciting new deals and discounts daily.</p>
           </div>
           
-          <div className="grid-item">
+          <div class="grid-item">
               <h2>Quick and Easy Returns</h2>
               <p>Hassle-free returns for a seamless shopping experience.</p>
           </div>
           
-          <div className="grid-item">
+          <div class="grid-item">
               <h2>Contact Us</h2>
             <p>
               Reach out to us if you have any concerns.
               <br/><br/>
                 <Link className='m-auto' to="/ContactUs">
-                  <button type="button" className="btn btn-custom">Contact Us</button>
+                  <button type="button" className="btn btn-dark">Contact Us</button>
                 </Link>
               </p>
           </div>
