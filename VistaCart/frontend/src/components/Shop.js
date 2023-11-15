@@ -134,7 +134,11 @@ function Shop() {
 
   const productsList = catList.length > 0 ? (
     catList.map((cat) => (
-      <Link key={cat._id} to="/ProductDetails" className="link-none-css" state={{ productDetails: cat }}>
+      <Link
+        key={cat._id}
+        to={`/ProductDetails?id=${cat._id}`} 
+        className="link-none-css"
+        state={{ productDetails: cat }}>
         <div key={cat._id} className="product-card">
           <div className="product-image">
             <img

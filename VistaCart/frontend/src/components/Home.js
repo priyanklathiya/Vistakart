@@ -59,6 +59,16 @@ function Home() {
         </div>
       </Carousel>
       </div>
+      <div className='container container-banner-1 mt-5'>
+
+        <h1 className='text-center'>OWN THE FLOOR</h1>
+        <h3 className='text-center mt-3'>Show the world your style with iconic sneakers and fresh looks.</h3>
+        <Link className='m-auto mt-4' to="/Shop">
+          <button type="button" className="btn btn-custom">Shop</button>
+        </Link>
+        
+
+      </div>
       
       <h2 className='text-center mt-5 mb-0'>Top Deals</h2>
         <br/>
@@ -84,6 +94,43 @@ function Home() {
       <div className="categories-section">
         <h2 className="text-center category-title">Categories</h2>
         <FeaturedCategories />
+      </div>
+
+      <div className='container'>
+        <div class="grid-container">
+          <div class="grid-item">
+              <h2> Quick and Easy Store Pickup</h2>
+              <p>Convenient and fast pickup options for your orders.</p>
+          </div>
+          <div class="grid-item">
+              <h2>Free Shipping over $35</h2>
+              <p>Enjoy free shipping on orders over $35.</p>
+          </div>
+          <div class="grid-item">
+              <h2>Low Price Guarantee</h2>
+              <p>We guarantee the lowest prices on our products.</p>
+          </div>
+          <div class="grid-item">
+              <h2>New Deals Every day</h2>
+              <p>Discover exciting new deals and discounts daily.</p>
+          </div>
+          
+          <div class="grid-item">
+              <h2>Quick and Easy Returns</h2>
+              <p>Hassle-free returns for a seamless shopping experience.</p>
+          </div>
+          
+          <div class="grid-item">
+              <h2>Contact Us</h2>
+            <p>
+              Reach out to us if you have any concerns.
+              <br/><br/>
+                <Link className='m-auto' to="/ContactUs">
+                  <button type="button" className="btn btn-custom">Contact Us</button>
+                </Link>
+              </p>
+          </div>
+        </div>
       </div>
 
     </>
