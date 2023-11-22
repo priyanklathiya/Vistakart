@@ -17,7 +17,8 @@ const upload = multer({
 })
 
 
-const { addFCategory, addFProduct, getAllFCategory, getAllFProduct, deleteFProduct, deleteFCategory, updateFCategoryStatus, updateFProductStatus, updateFeaturedCategory } = require("../controllers/home");
+const { addFCategory, addFProduct, getAllFCategory, getAllFProduct, deleteFProduct, deleteFCategory, updateFCategoryStatus, updateFProductStatus, updateFeaturedCategory, getActiveProduct,
+  getActiveCategories } = require("../controllers/home");
 
 // router.route("/").get(getAllProducts);
 
@@ -35,5 +36,8 @@ router.route("/addFeaturedProduct").post(addFProduct);
 router.route("/getAllFeaturedProduct").get(getAllFProduct);
 router.route("/deleteFeaturedProduct").post(deleteFProduct);
 router.route("/updateProductStatus").post(updateFProductStatus);
+router.route("/getActiveProduct").get(getActiveProduct);
+router.route("/getActiveCategories").get(getActiveCategories);
+
 
 module.exports = router;

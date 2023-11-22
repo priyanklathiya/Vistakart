@@ -6,7 +6,6 @@ const Schema = mongoose.Schema;
 
 mongoose.Promise = global.Promise;
 
-// category schema
 const categorySchema = new Schema({
     categoryName: { type: String, required: true, trim: true },
     link: { type: String, default: 'all' },
@@ -18,5 +17,5 @@ const categorySchema = new Schema({
     status: { type: Boolean, default: true },
 });
 
-const info = mongoose.model("featuredCategory", categorySchema);  // collection name - category
+const info = mongoose.model("featuredCategory", categorySchema);
 module.exports = info;

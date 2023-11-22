@@ -20,22 +20,6 @@ const getProductBySku = async (req, res) => {
     }
 };
 
-
-// const getProductById = async (req, res) => {
-//     const id  = req.body.productId;
-//     try {
-//         const product = await productmodel.findOne({ productId });
-//             // console.log(product);
-
-//         if (!product) {
-//             return res.status(404).json({ error: 'Product not found' });
-//         }
-//         res.status(200).json({ product });
-//     } catch (err) {
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
-
 const getProductById = async (req, res) => {
     // const id = req.body.productId; // Extract productId from the request body
     const productId = req.params.productId;
@@ -54,11 +38,23 @@ const getProductById = async (req, res) => {
 
 
 
+const getProductByPId = async (req, res) => {
+    const productId = req.body.productId;
+    try {
+        const product = await productmodel.findOne({ _id: productId }); // Use the id variable in your query
+
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.status(200).json({ product });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
 const addProduct = async (req, res) => { 
     try {
-        // console.log(req.body);
-        //  console.log(req.files.imagePath1[0].filename); // undefined
-        // return;
 
         let _imagePath1 = "default";
         if (req.files.imagePath1) {
@@ -119,20 +115,6 @@ const deleteProduct = async (req, res) => {
     }
 
 }
-
-// const updateProduct = async (req, res) => {
-//     try {
-//         console.log(req.body);
-        
-//         await productmodel.findOneAndUpdate({ _id: req.body.pid }, {
-//             brandName: req.body.brandName
-//         }).then(() => {
-//             res.status(200).json({ msg: "Data updated successfully.", status: 1 });
-//         });
-//     } catch (error) {
-//         res.status(500).json({ msg: "Error: Data could not be updated", err: error, status: 0 });
-//     }
-// };
 
 const updateProduct = async (req, res) => { 
     try {
@@ -203,5 +185,96 @@ const updateProduct = async (req, res) => {
     }    
 };
 
+const sortProductsBy = async (req, res) => {
+    const sortBy = req.body.sortBy;
 
-module.exports = {getAllProducts, addProduct, deleteProduct, updateProduct, getProductBySku, getProductById }
+    try {
+        let products;
+
+        // Fetch all products from the database
+        if (sortBy === 'lowToHigh') {
+            products = await productmodel.find().sort({ price: 1 });
+        } else if (sortBy === 'highToLow') {
+            products = await productmodel.find().sort({ price: -1 });
+        } else if (sortBy === 'newest') {
+            products = await productmodel.find().sort({ createdAt: -1 });
+        } else {
+            return res.status(400).json({ error: 'Invalid sortBy parameter' });
+        }
+        // console.log(products);
+
+        res.status(200).json({ products });
+
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+const filterProducts = async (req, res) => {
+    const brand = req.body.brand || [];
+    const categories = req.body.categories || [];
+    const gender = req.body.gender || [];
+    const sortBy = req.body.sortBy;
+
+
+    try {
+        let filterCriteria = {};
+
+        // Handle filtering based on parameters
+        if (gender.length > 0) {
+            // If gender is an array, use $in operator
+            filterCriteria.gender = { $in: gender };
+        }
+        if (brand.length > 0) {
+            // If brand is an array, use $in operator
+            filterCriteria.brandId = { $in: brand };
+        }
+        if (categories.length > 0) {
+            // If categories is an array, use $in operator
+            filterCriteria.categoryId = { $in: categories };
+        }
+
+        // Check if all parameters are empty, if yes, retrieve all products
+        if (brand.length === 0 && categories.length === 0 && gender.length === 0 && !sortBy) {
+            // console.log('Fetching all products');
+            const products = await productmodel.find({});
+            return res.status(200).json({ products });
+        }
+
+        let products;
+        // console.log(filterCriteria);
+
+        // Fetch and filter products from the database based on the criteria
+        if (sortBy === 'lowToHigh') {
+            products = await productmodel.find(filterCriteria).sort({ price: 1 });
+        } else if (sortBy === 'highToLow') {
+            products = await productmodel.find(filterCriteria).sort({ price: -1 });
+        } else if (sortBy === 'newest') {
+            products = await productmodel.find(filterCriteria).sort({ createdAt: -1 });
+        } else {
+            products = await productmodel.find(filterCriteria);
+        }
+
+        // console.log(products);
+
+        res.status(200).json({ products });
+
+    } catch (err) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+
+
+
+module.exports = {
+    getAllProducts,
+    addProduct,
+    deleteProduct,
+    updateProduct,
+    getProductBySku,
+    getProductById,
+    sortProductsBy,
+    filterProducts,
+    getProductByPId
+}

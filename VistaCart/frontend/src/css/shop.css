@@ -17,6 +17,7 @@
 .product-list{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    max-width: 75%;
 
 }
 
@@ -30,7 +31,14 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
     cursor: pointer;
+    height: 95%;
     /* 3 products in one row for larger screens */
+}
+
+.product-price{
+    font-size: 1.2em;
+    color:#000;
+    font-weight: 700;
 }
 
 .product-card:nth-child(3n) {

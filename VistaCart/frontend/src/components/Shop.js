@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import '../css/shop.css'; 
+import '../css/shop.css';
+
 function Shop() {
   const [catList, setCatList] = useState([]);
   const [brandList, setBrandList] = useState([]);
@@ -10,46 +11,78 @@ function Shop() {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedSubCategories, setSelectedSubCategories] = useState([]);
-  const [gender, setGender] = useState(['male', 'female']);
-  const [sortBy, setSortBy] = useState('featured');
+  const [gender, setGender] = useState([]);
+  const [genderType, setGenderType] = useState(['male', 'female']);
+  const [sortBy, setSortBy] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [productsList, setProductsList] = useState([]);
+
+    useEffect(() => {
+    
+    axios.get("http://localhost:8080/auth/userSession")
+      .then((response) => {
+        if (response.data) {
+          if (response.data.valid == true) {
+            // if session is true
+            console.log(response.data);
+          } else {
+            // if session is false
+          } 
+        } else {
+            // if session is false
+          
+        }
+       })
+  }, [])
 
   useEffect(() => {
     fetchData();
     fetchBrands();
     fetchCategories();
     fetchSubCategories();
-  }, [selectedBrands, selectedCategories, selectedSubCategories, sortBy]);
+  }, [selectedBrands, selectedCategories, selectedSubCategories, sortBy, gender]);
 
-  const fetchData = () => {
-    axios.get('http://localhost:8080/api/products/getAllProducts').then((response) => {
-      if (response.data) {
-        setCatList(response.data.allProducts);
-      }
-    });
+  const fetchData = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/products/filterProducts', {
+        brand: selectedBrands,
+        categories: selectedCategories,
+        gender: gender,
+        sortBy: sortBy,
+      });
+      setProductsList(response.data.products);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setLoading(false);
+    }
   };
 
-  const fetchBrands = () => {
-    axios.get('http://localhost:8080/api/brands/getAllBrand').then((response) => {
-      if (response.data) {
-        setBrandList(response.data.allbrand);
-      }
-    });
+  const fetchBrands = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/brands/getAllBrand');
+      setBrandList(response.data.allbrand);
+    } catch (error) {
+      console.error('Error fetching brands:', error);
+    }
   };
 
-  const fetchCategories = () => {
-    axios.get('http://localhost:8080/api/category/getAllCategory').then((response) => {
-      if (response.data) {
-        setCategoryList(response.data.allCategory);
-      }
-    });
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/category/getAllCategory');
+      setCategoryList(response.data.allCategory);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
   };
 
-  const fetchSubCategories = () => {
-    axios.get('http://localhost:8080/api/subcategory/getAllSubCategory').then((response) => {
-      if (response.data) {
-        setSubCategoryList(response.data.allSubCategory);
-      }
-    });
+  const fetchSubCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/api/subcategory/getAllSubCategory');
+      setSubCategoryList(response.data.allSubCategory);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
   };
 
   const handleBrandChange = (brandId) => {
@@ -130,89 +163,47 @@ function Shop() {
     <div></div>
   );
 
-  const genderList = gender.length > 0 ? (
-    gender.map((g) => (
+const genderList = genderType.length > 0 ? (
+  <div>
+    {genderType.map((g) => (
       <label key={g} className='m-1'>
         <input
           type="checkbox"
           value={g}
-          checked={selectedSubCategories.includes(g)}
-          onChange={() => handleSubCategoryChange(g)}
+          checked={gender.includes(g)}
+          onChange={() => handleGenderChange(g)}
         />
         {g}
       </label>
-    ))
-  ) : (
-    <div></div>
-  );
+    ))}
+  </div>
+) : (
+  <div></div>
+);
+
+const handleGenderChange = (selectedGender) => {
+  setGender((prevGender) => {
+    if (prevGender.includes(selectedGender)) {
+      return prevGender.filter((g) => g !== selectedGender);
+    } else {
+      return [...prevGender, selectedGender];
+    }
+  });
+};
 
   const handleViewEvent = (productDetails) => {
     return <Link to={`/products/${productDetails._id}`} state={productDetails}></Link>;
   };
 
-  const productsList = catList.length > 0 ? (
-    catList.map((cat) => (
-      <Link
-        key={cat._id}
-        to={`/ProductDetails?id=${cat._id}`} 
-        className="link-none-css"
-        state={{ productDetails: cat }}>
-        <div key={cat._id} className="product-card">
-          <div className="product-image">
-            <img
-              src={`http://localhost:8080/Images/products/${cat.imagePath.imagePath1}`}
-              alt={cat.productName}
-            />
-          </div>
-          <div className="product-details">
-            <h3 className="product-title">{cat.productName}</h3>
-            <p className="product-info">SKU: {cat.sku}</p>
-            <p className="product-info">Quantity: {cat.quantity}</p>
-          </div>
-        </div>
-      </Link>
-    ))
-  ) : (
-    <div className="no-products-message">
-      <p>No products available at the moment.</p>
-    </div>
-  );
-
   const handleSortByChange = (selectedSortBy) => {
     setSortBy(selectedSortBy);
   };
 
-  const handleSortButtonClick = () => {
-    // Perform sorting logic based on the selected sorting option
-    // ...
-
-    // For demonstration purposes, let's assume you sort the products array here
-    // You would need to modify this logic based on your actual data structure
-    const sortedProducts = [...catList]; // Assuming catList is an array of products
-
-    switch (sortBy) {
-      case 'lowToHigh':
-        sortedProducts.sort((a, b) => a.price - b.price);
-        break;
-      case 'highToLow':
-        sortedProducts.sort((a, b) => b.price - a.price);
-        break;
-      case 'newest':
-        sortedProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        break;
-      // Add more cases as needed
-      default:
-        // 'featured' or any other default sorting logic
-        break;
-    }
-
-    // Update the state with the sorted products
-    setCatList(sortedProducts);
+  const handleApplyFilterClick = () => {
+    fetchData();
   };
 
-  
   const sortOptions = [
-    { value: 'featured', label: 'Featured' },
     { value: 'lowToHigh', label: 'Price: Low to High' },
     { value: 'highToLow', label: 'Price: High to Low' },
     { value: 'newest', label: 'Newest' },
@@ -221,6 +212,7 @@ function Shop() {
 
   const sortByDropdown = (
     <select value={sortBy} onChange={(e) => handleSortByChange(e.target.value)}>
+      <option value=''>Select</option>
       {sortOptions.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}
@@ -232,14 +224,14 @@ function Shop() {
   return (
     <div className="shop-container">
       <div className="filter-menu">
-        
         <h5>Sort By:</h5>
-         <hr />
+        <hr />
         {sortByDropdown}
         <br />
         <br />
-        <button className="filter-button" > Apply Sort </button>
-
+        {/* <button className="filter-button" onClick={handleApplyFilterClick}>
+          Apply Filter
+        </button> */}
         <br />
         <br />
         <hr />
@@ -249,13 +241,44 @@ function Shop() {
         {brandsList}
         <h6>By Categories:</h6>
         {categoriesList}
-        <h6>By Subcategories:</h6>
-        {subcategoryList}
         <h6>By Gender:</h6>
         {genderList}
-        <button className="filter-button" onClick={handleSortButtonClick}> Apply Filter </button>
+        {/* <button className="filter-button" onClick={handleApplyFilterClick}>
+          Apply Filter
+        </button> */}
       </div>
-      <div className="product-list">{productsList}</div>
+      <div className="product-list">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          productsList.length > 0 ? (
+            productsList.map((cat) => (
+              <Link
+                key={cat._id}
+                to={`/ProductDetails?id=${cat._id}`}
+                className="link-none-css"
+                state={{ productDetails: cat }}
+              >
+                <div key={cat._id} className="product-card">
+                  <div className="product-image">
+                    <img
+                      src={`http://localhost:8080/Images/products/${cat.imagePath.imagePath1}`}
+                      alt={cat.productName}
+                    />
+                  </div>
+                  <div className="product-details">
+                    <h3 className="product-title"> {cat.productName} </h3>
+                    <p className="product-info"> SKU: {cat.sku} </p>
+                    <p className="product-price"> $ {cat.price} </p>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p>No products available.</p>
+          )
+        )}
+      </div>
     </div>
   );
 }

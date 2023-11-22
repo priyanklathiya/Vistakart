@@ -48,7 +48,12 @@ function AddUpdateBrand() {
                         setIsSuccess(false);
                         setIsFailed(true);
                         setSuccessMsg('Something went wrong. Please try again later!');
-                        }
+                    }
+                    setTimeout(() => {
+                        setIsSuccess(null);
+                        setIsFailed(null);
+                        setSuccessMsg('');
+                    }, 4000);
                 }).catch((err) => { 
                     setIsSuccess(false);
                     setIsFailed(true);

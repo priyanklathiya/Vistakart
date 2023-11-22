@@ -105,7 +105,11 @@ const Header = () => {
             ) : ""} */}
 
             {userType === 0 || userType === 1 ? (
-              <Link to="/" className="cart-link">Cart</Link>
+              <Link to="/Cart" className="cart-link">Cart</Link>
+            ) : ""}
+
+            {userType === 1 ? (
+              <Link to="/OrderHistory" className="cart-link">Order History</Link>
             ) : ""}
 
             {userType != 0 ? (

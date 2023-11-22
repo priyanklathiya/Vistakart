@@ -1,5 +1,6 @@
 const featuredCategoriesmodel = require('../models/featuredCategories.model');
 const featuredProductsmodel = require('../models/featuredProducts.model');
+const productmodel = require('../models/product.model');
 
 // featured categories ---------------------------------------------------------------------------------------
 const addFCategory = async (req, res) => { 
@@ -42,7 +43,7 @@ const updateFeaturedCategory = async (req, res) => {
       updatedData.imagePath = _imagePath;
     }
 
-    console.log(updatedData);
+    // console.log(updatedData);
 
     await featuredCategoriesmodel.findOneAndUpdate({ _id: req.body.featuredPId }, updatedData ).then(() => {
         res.status(200).json({ msg: "Data updated successfully.", status: 1 });
@@ -55,7 +56,8 @@ const updateFeaturedCategory = async (req, res) => {
 };
 
 const getAllFCategory = async (req, res) => { 
-    const allFCategory = await featuredCategoriesmodel.find({});
+  const allFCategory = await featuredCategoriesmodel.find({});
+  // console.log(allFCategory);
     res.status(200).json({ allFCategory });
 };
 
@@ -108,18 +110,7 @@ const updateFCategoryStatus = async (req, res) => {
 
 // featured products ---------------------------------------------------------------------------------------
 
-// const addFProduct = async (req, res) => {
-//     try {
-//         console.log(req.body.productId);
-//         await featuredProductsmodel.create({
-//             productId: req.body.productId
-//         }).then(() => {
-//             res.status(200).json({ msg: "Data inserted successfully.", status: 1 });
-//         });
-//     } catch (error) {
-//         res.status(500).json({ msg: "Error: Data could not be added", err: error, status: 0 });
-//     }
-// };
+
 const addFProduct = async (req, res) => {
   try {
     const existingProduct = await featuredProductsmodel.findOne({ productId: req.body.productId });
@@ -144,7 +135,7 @@ const getAllFProduct = async (req, res) => {
 };
 
 const deleteFProduct = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     try {
         await featuredProductsmodel.findOneAndDelete({ _id: req.body.featuredPId })
             
@@ -188,4 +179,46 @@ const updateFProductStatus = async (req, res) => {
   }
 };
 
-module.exports = { addFCategory, addFProduct, getAllFCategory, getAllFProduct, deleteFProduct, deleteFCategory, updateFCategoryStatus, updateFProductStatus, updateFeaturedCategory } 
+const getActiveProduct = async (req, res) => { 
+    try {
+        // Fetch active products
+        const activeProducts = await featuredProductsmodel.find({ status: true });
+
+        // Extract productIds from activeProducts
+        const productIds = activeProducts.map(product => product.productId);
+
+        // Fetch all products with _id in productIds
+      const allProducts = await productmodel.find({ _id: { $in: productIds } });
+      // console.log(allProducts);
+
+        res.status(200).json({ allProducts });
+    } catch (error) {
+        console.error(`Error fetching active products: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const getActiveCategories = async (req, res) => { 
+    try {
+        const activeCategories = await featuredCategoriesmodel.find({ status: true });
+        res.status(200).json({ activeCategories });
+    } catch (error) {
+        console.error(`Error fetching active categories: ${error}`);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+module.exports = {
+  addFCategory,
+  addFProduct,
+  getAllFCategory,
+  getAllFProduct, 
+  deleteFProduct, 
+  deleteFCategory, 
+  updateFCategoryStatus, 
+  updateFProductStatus, 
+  updateFeaturedCategory, 
+  getActiveProduct,
+  getActiveCategories
+} 

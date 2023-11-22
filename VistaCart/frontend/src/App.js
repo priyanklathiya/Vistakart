@@ -28,6 +28,9 @@ import FeaturedCategory from './components/FeaturedCategory.js';
 import AddFeaturedProduct from './components/AddFeaturedProduct.js'; 
 import AddUpdateFeaturedCategory from './components/AddUpdateFeaturedCategory.js'; 
 import UpdateQuantity from './components/UpdateQuantity.js'; 
+import Cart from './components/Cart.js';
+import Checkout from './components/Checkout.js';
+import OrderHistory from './components/OrderHistory.js';
 
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
@@ -137,9 +140,12 @@ function App() {
             
             <Route path="/UpdateQuantity" element={<UpdateQuantity />} />
 
+            <Route path="/Cart" element={<Cart />} />
 
+            <Route path="/Checkout" element={<Checkout />} />
+
+            <Route path="/OrderHistory" element={<OrderHistory />} />
             
-
           </Route>
         
         </Routes>

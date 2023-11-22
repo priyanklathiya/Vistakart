@@ -5,7 +5,7 @@ function FeaturedCategory() {
 
   const [catList, setCatList] = useState([]);
 
-    useEffect(() => {
+  useEffect(() => {
     fetchData();
   }, [])  
   

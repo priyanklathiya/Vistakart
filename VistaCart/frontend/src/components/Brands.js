@@ -12,13 +12,13 @@ function Brands() {
   }, [])  
   
   const fetchData = () => {
-      axios.get("http://localhost:8080/api/brands/getAllBrand")
-        .then((response) => {
-          // console.log(response)
-          if (response.data) {
-            setCatList(response.data.allbrand);
-          }
-        })
+    axios.get("http://localhost:8080/api/brands/getAllBrand")
+      .then((response) => {
+        // console.log(response)
+        if (response.data) {
+          setCatList(response.data.allbrand);
+        }
+    })
   }
 
   const rows =
