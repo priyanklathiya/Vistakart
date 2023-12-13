@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import ReactPDF from '@react-pdf/renderer';
+import Invoice from './Invoice.js';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 function OrderHistory() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
   const [userId, setUserId] = useState('');
@@ -35,13 +37,12 @@ function OrderHistory() {
         await axios.post("http://localhost:8080/api/order/getOrderHistoryByUser", {
           userId: userId,
         }).then((response) => {
-            if (response.status === 200) {
-                setOrderData(response.data.OrderHistory);
-                console.log(response.data.OrderHistory);
-            } else {
-                console.error('Error fetching order history');
-                setOrderData(null);
-            }
+          if (response.status === 200) {
+            setOrderData(response.data.OrderHistory);;
+          } else {
+            console.error('Error fetching order history');
+            setOrderData(null);
+          }
         });
       } catch (error) {
         console.error('Error fetching order history:', error);
@@ -49,11 +50,14 @@ function OrderHistory() {
       }
     }
 
-      if (isLoggedIn) {
-          fetchOrderHistory();
-      }
-      
+    if (isLoggedIn) {
+      fetchOrderHistory();
+    }
+
   }, [isLoggedIn, userId]);
+
+
+
 
   return (
     <>
@@ -63,39 +67,59 @@ function OrderHistory() {
           <table className="table">
             <thead>
               <tr>
+                <th>Order Number</th>
                 <th>Order Date</th>
                 <th>Total Amount</th>
-                <th>Delivery Status</th>
-                <th>Actions</th>
+                <th>Order Status</th>
+                {/* <th>Delivery Status</th> */}
+                <th>Order</th>
+                <th>Invoice</th>
               </tr>
             </thead>
             <tbody>
               {orderData.map((order, index) => (
                 <tr key={index}>
-                    <td>{new Date(order.orderDate).toLocaleString()}</td>
-                    <td>${order.totalAmount.toFixed(2)}</td>
-                    <td>{order.deliveryStatus}</td>
-                    <td>
+                  <td>{order._id.toUpperCase()}</td>
+                  <td>{new Date(order.orderDate).toLocaleString()}</td>
+                  <td>${order.totalAmount.toFixed(2)}</td>
+                  <td>
+                    {order.statusCode === '0' && 'Order Approval Pending'}
+                    {order.statusCode === '1' && 'Order Approved'}
+                    {order.statusCode === '2' && 'Order Rejected'}
+                  </td>
+
+                  {/* <td>{order.deliveryStatus}</td> */}
+                  <td>
                     <ul>
-                        {order.orderDetails.map((item, itemIndex) => (
+                      {order.orderDetails.map((item, itemIndex) => (
                         <li key={itemIndex}>
-                            <strong>Product Name:</strong> {item.productName}, &nbsp;
-                            <strong>Quantity:</strong> {item.quantity}, &nbsp;
-                            <strong>Price:</strong> ${item.price.toFixed(2)}, &nbsp;
-                            <strong>Size:</strong> {item.size}
+                          <strong>Product Name:</strong> {item.productName}, <br />
+                          <strong>Size:</strong> {item.size}, <br />
+                          <strong>Quantity:</strong> {item.quantity}, <br />
+                          <strong>Price:</strong> ${item.price.toFixed(2)}
                         </li>
-                        ))}
+                      ))}
                     </ul>
-                    </td>
-                    <td>
-                    {/* Add any actions you want here */}
-                    </td>
-                  </tr>
-                ))}
+                  </td>
+                  <td>
+                    {order.statusCode === '1' && (
+                      <PDFDownloadLink document={<Invoice orderNumber={order._id} />} fileName='Invoice'>
+                        {({ loading }) => loading ? (
+                          <button>Loading Document....</button>
+                        ) : (
+                          <button>Download Invoice</button>
+                        )}
+                      </PDFDownloadLink>
+                    )}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         ) : (
-          <p>No order history available.</p>
+            <p>
+              No order history available.
+            </p>
         )}
       </div>
     </>

@@ -31,6 +31,10 @@ import UpdateQuantity from './components/UpdateQuantity.js';
 import Cart from './components/Cart.js';
 import Checkout from './components/Checkout.js';
 import OrderHistory from './components/OrderHistory.js';
+import PendingOrders from './components/PendingOrders.js';
+import OrderStatusChange from './components/OrderStatusChange.js';
+import ApprovedOrders from './components/ApprovedOrders.js';
+import NotApprovedOrders from './components/NotApprovedOrders.js';
 
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
@@ -145,6 +149,14 @@ function App() {
             <Route path="/Checkout" element={<Checkout />} />
 
             <Route path="/OrderHistory" element={<OrderHistory />} />
+
+            <Route path="/PendingOrders" element={<PendingOrders />} />
+
+            <Route path="/OrderStatusChange" element={<OrderStatusChange />} />
+
+            <Route path="/NotApprovedOrders" element={<NotApprovedOrders />} />
+
+            <Route path="/ApprovedOrders" element={<ApprovedOrders />} />
             
           </Route>
         

@@ -44,7 +44,7 @@ const deleteBrand = async (req, res) => {
 
 const updateBrand = async (req, res) => { 
     try {
-        console.log(req.body);
+        // console.log(req.body);
         
         await brandmodel.findOneAndUpdate({ _id: req.body.brandId }, {
             brandName: req.body.brandName

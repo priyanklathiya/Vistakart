@@ -170,6 +170,21 @@ const Header = () => {
                       Featured Categories
                   </Link>
                 </li>
+                <li>
+                  <Link to="/PendingOrders">
+                      Pending Orders
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/NotApprovedOrders">
+                      Rejected Orders
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/ApprovedOrders">
+                      Approved Orders
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>   

@@ -392,6 +392,48 @@ const getOrderHistoryByStatus = async (req, res) => {
     }
 };
 
+
+const getOrderById = async (req, res) => {
+    const orderId = req.body.orderId;
+    try {
+        // Fetch OrderDetails
+        const OrderDetails = await ordermodel.find({ _id : orderId });
+        res.status(200).json({ OrderDetails });
+        
+    } catch (error) {
+        console.error('Error fetching details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const updateOrderStatus = async (req, res) => { 
+    try {
+        console.log(req.body);
+         await ordermodel.findOneAndUpdate({ _id: req.body.orderId }, {
+            statusCode: req.body.statusCode
+        }).then(() => {
+            res.status(200).json({ msg: "Data updated successfully.", status: 1 });
+        });
+    } catch (error) {
+        res.status(500).json({ msg: "Error: Data could not be updated", err: error, status: 0 });
+    }
+};
+
+const getInvoiceDetails = async (req, res) => {
+    const orderNumber = req.body.orderNumber;
+    console.log(orderNumber);
+    try {
+        // Fetch order history
+        const InvoiceDetails = await ordermodel.find({ _id: orderNumber });
+        const shippingDetails = await shippingmodel.find({ _id: InvoiceDetails[0].shippingId });
+        res.status(200).json({ InvoiceDetails, shippingDetails });
+        
+    } catch (error) {
+        console.error('Error fetching details:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
 module.exports = {
     addCart, 
     addShippingDetails, 
@@ -401,5 +443,8 @@ module.exports = {
     getShippingDetails, 
     createOrder, 
     getOrderHistoryByUser,
-    getOrderHistoryByStatus
+    getOrderHistoryByStatus,
+    getOrderById,
+    updateOrderStatus,
+    getInvoiceDetails
 }

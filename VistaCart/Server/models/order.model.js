@@ -49,7 +49,7 @@ const orderSchema = new Schema({
         type: String,
         trim: true,
         required: true,
-        enum: ['pending', 'processing', 'completed'],
+        enum: ['pending', 'processing', 'shipped', 'delivered'],
         default: 'pending'
     },
     statusCode: {
@@ -57,7 +57,7 @@ const orderSchema = new Schema({
         trim: true,
         required: true,
         enum: ['0', '1', '2'],
-        default:'0' // 0 - order approval pending, 1 - order approved, 2 - order not approved
+        default:'0' // 0 - order approval pending, 1 - order approved, 2 - order not approved / Rejected
     },
 });
 
